@@ -1,0 +1,172 @@
+# i3 config fime (v4)
+#
+# Please see http://i3wm.org/docs/userguide.html for a complete reference!
+# vim:filetype=i3
+
+set $output1 DVI-I-1
+set $output2 HDMI-0
+
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+# A small font is used in order to ensure stacked layout does not take up too much room
+font pango:Iconsolata Medium 7
+
+default_orientation horizontal
+
+# Colors
+# Background colors
+set $error #5f0000
+set $special #af5f00
+set $text #262626
+set $graphic #000000
+# Foreground colors
+set $meta #005fff
+set $activation #00ff00
+set $foundation #d78700
+set $literal #ff5faf
+
+client.background $graphic
+
+# border, background, foreground, indicator
+client.focused $special $meta $text $activation
+client.focused_inactive $special $text $meta $activation
+client.unfocused $graphic $graphic $meta $activation
+client.urgent $special $special $meta $activation
+
+# Keybindings
+
+# Due to some keyboards not having the windows key (specifically my chromebook) use the Alt key as my default modifier.
+set $alt Mod1
+set $terminal_cmd terminology
+set $get_workspace $(i3-msg -t get_workspaces | jsawk 'out(this.name)' | head --lines=-1 | dmenu)
+set $create_workspace_cmd i3-input -F 'workspace "%s"' -P 'Workspace name: '
+set $rename_workspace_cmd i3-input -F 'rename workspace to "%s"' -P 'New name: '
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $alt
+
+bindsym $alt+Return exec $terminal_cmd
+bindsym $alt+Shift+w kill
+bindsym $alt+c exec $create_workspace_cmd
+bindsym $alt+n exec $rename_workspace_cmd
+
+# start dmenu (a program launcher)
+#   -i matches menu items case insensitively
+bindsym $alt+e exec dmenu_run -i
+
+# change focus
+bindsym $alt+h focus left
+bindsym $alt+l focus right
+bindsym $alt+j focus down
+bindsym $alt+k focus up
+bindsym $alt+1 focus output $output1
+bindsym $alt+2 focus output $output2
+
+bindsym $alt+g exec i3-msg workspace $get_workspace
+
+bindsym $alt+space focus mode_toggle
+bindsym $alt+i focus parent
+bindsym $alt+u focus child
+
+# move focused window
+bindsym $alt+Shift+h move left
+bindsym $alt+Shift+l move right
+bindsym $alt+Shift+j move down
+bindsym $alt+Shift+k move up
+bindsym $alt+Shift+1 move output $output1; focus output $output1
+bindsym $alt+Shift+2 move output $output2; focus output $output2
+
+bindsym $alt+Shift+g exec i3-msg move container to workspace $get_workspace
+
+# move focused workspace
+bindsym $alt+Shift+o move workspace to output right
+
+# stacked works better as tabbed since we can then use focus up and down
+bindsym $alt+t layout stacked
+bindsym $alt+Shift+space floating toggle
+bindsym $alt+f fullscreen
+bindsym $alt+s layout splith
+
+# scratchpad
+bindsym $alt+p move scratchpad
+bindsym $alt+o scratchpad show
+
+# reload the configuration file
+bindsym $alt+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $alt+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $alt+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window's width.
+        # Pressing right will grow the window's width.
+        # Pressing up will shrink the window's height.
+        # Pressing down will grow the window's height.
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $alt+r mode "resize"
+
+# global bindings that aren't window specific (this seems like the best
+# place to put them). These bindings are implemented with Ctrl+Alt modifier
+set $ctrl_alt Control+Mod1
+set $noid --no-startup-id
+
+# volume bindings
+bindsym $ctrl_alt+plus exec $noid ~/pa-vol.sh plus
+bindsym $ctrl_alt+minus exec $noid ~/pa-vol.sh minus
+bindsym $ctrl_alt+0 exec $noid ~/pa-vol.sh mute
+
+# pianobar bindings
+# 'p' = pause/resume playback
+bindsym $ctrl_alt+p exec $noid echo -n 'p' > ~/.config/pianobar/ctl
+# 'n' = skip current song
+bindsym $ctrl_alt+bracketright exec $noid echo -n 'n' > ~/.config/pianobar/ctl
+
+# lock screen
+bindsym $ctrl_alt+backslash exec $noid i3lock -c 000000
+
+# keepass auto-type
+bindsym $ctrl_alt+k exec $noid keepass2 --auto-type
+
+# Window specific properties
+for_window [class="Gcalctool" instance="gcalctool"] floating enable
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+    position top
+    tray_output DVI-I-1
+    font pango:Inconsolata Medium 10
+    colors {
+        background $text
+        statusline $literal
+        separator $foundation
+
+# border, background, foreground
+        focused_workspace $special $meta $text
+        active_workspace $special $text $meta
+        inactive_workspace $graphic $text $meta
+        urgent_workspace $special $special $meta
+    }
+}
+
+# Set startup volume
+exec pactl set-sink-volume 0 '20%' &
+
+# Start redshift
+exec redshift -t 5700:4000
+
+# Set Caps Lock key to be CTRL
+exec $noid setxkbmap -option ctrl:nocaps
