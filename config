@@ -38,6 +38,7 @@ client.urgent $special $special $meta $activation
 # Due to some keyboards not having the windows key (specifically my chromebook) use the Alt key as my default modifier.
 set $alt Mod1
 set $terminal_cmd terminology
+#set $terminal_cmd roxterm --execute nvim -c terminal
 set $get_workspace $(i3-msg -t get_workspaces | jsawk 'out(this.name)' | head --lines=-1 | dmenu)
 set $create_workspace_cmd i3-input -F 'workspace "%s"' -P 'Workspace name: '
 set $rename_workspace_cmd i3-input -F 'rename workspace to "%s"' -P 'New name: '
@@ -141,6 +142,8 @@ bindsym $ctrl_alt+k exec $noid keepass2 --auto-type
 
 # Window specific properties
 for_window [class="Gcalctool" instance="gcalctool"] floating enable
+# hangouts (make sure window goes to 'hangouts' window and person windows stack to the right of the messages window)
+for_window [instance="crx_nckgahadagoaajjgafhacjanaoiihapd"] move right, move container to workspace hangouts
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
