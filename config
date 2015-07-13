@@ -48,7 +48,7 @@ client.urgent $special $special $meta $activation
 
 # Due to some keyboards not having the windows key (specifically my chromebook) use the Alt key as my default modifier.
 set $alt Mod1
-set $terminal_cmd terminology
+set $terminal_cmd roxterm
 #set $terminal_cmd roxterm --execute nvim -c terminal
 set $get_workspace $(i3-msg -t get_workspaces | jsawk 'out(this.name)' | head --lines=-1 | dmenu)
 set $create_workspace_cmd i3-input -F 'workspace "%s"' -P 'Workspace name: '
@@ -138,13 +138,16 @@ set $ctrl_alt Control+Mod1
 set $noid --no-startup-id
 
 # volume bindings
-bindsym $ctrl_alt+plus exec $noid ~/pa-vol.sh plus
-bindsym $ctrl_alt+minus exec $noid ~/pa-vol.sh minus
-bindsym $ctrl_alt+0 exec $noid ~/pa-vol.sh mute
+#bindsym $ctrl_alt+plus exec $noid ~/pa-vol.sh plus
+#bindsym $ctrl_alt+minus exec $noid ~/pa-vol.sh minus
+#bindsym $ctrl_alt+0 exec $noid ~/pa-vol.sh mute
+bindsym $ctrl_alt+plus exec $noid ponymix --max-volume 100 increase 4 | pkill -RTMIN+1 i3blocks
+bindsym $ctrl_alt+minus exec $noid ponymix --max-volume 100 decrease 4 | pkill -RTMIN+1 i3blocks
+bindsym $ctrl_alt+0 exec $noid ponymix toggle | pkill -RTMIN+1 i3blocks
 
 # pianobar bindings
 # 'p' = pause/resume playback
-bindsym $ctrl_alt+p exec $noid echo -n 'p' > ~/.config/pianobar/ctl
+bindsym $ctrl_alt+p exec $noid echo -n 'p' > ~/.config/pianobar/ctl | pkill -RTMIN+2 i3blocks
 # 'n' = skip current song
 bindsym $ctrl_alt+bracketright exec $noid echo -n 'n' > ~/.config/pianobar/ctl
 
@@ -164,7 +167,7 @@ for_window [class="^Insync.py$"] floating enable
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-    status_command $HOME/.i3/i3blocks/i3blocks
+    status_command $HOME/.i3/i3blocks/i3blocks -c $HOME/.i3/i3blocks/i3blocks.conf
     position top
     tray_output DVI-I-1
     font pango:Inconsolata Medium 10
