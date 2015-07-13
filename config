@@ -19,7 +19,8 @@ set $dunst dunst &
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-# A small font is used in order to ensure stacked layout does not take up too much room
+# A small font is used in order to ensure stacked layout does not take up too
+# much room.
 font pango:Iconsolata Medium 7
 
 workspace_layout stacking
@@ -46,7 +47,8 @@ client.urgent $special $special $meta $activation
 
 # Keybindings
 
-# Due to some keyboards not having the windows key (specifically my chromebook) use the Alt key as my default modifier.
+# Due to some keyboards not having the windows key (specifically my chromebook)
+# use the Alt key as my default modifier.
 set $alt Mod1
 set $terminal_cmd roxterm
 #set $terminal_cmd roxterm --execute nvim -c terminal
@@ -114,12 +116,13 @@ bindsym $alt+Shift+r restart
 bindsym $alt+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 mode "resize" {
-    # Currently the plan is to not have windows vertically split so the up and down resizes are only for floating containers
+    # Currently the plan is to not have windows vertically split so the up and
+    # down resizes are only for floating containers.
     bindsym h resize grow left 10 px or 16 ppt
     bindsym j resize grow down 10 px
     bindsym k resize grow up 10 px
     bindsym l resize grow right 10 px or 16 ppt
-    
+
     bindsym Shift+h resize shrink left 10 px or 16 ppt
     bindsym Shift+j resize shrink down 10 px
     bindsym Shift+k resize shrink up 10 px
