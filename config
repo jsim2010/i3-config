@@ -170,7 +170,7 @@ for_window [class="^Insync.py$"] floating enable
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-    status_command i3blocks -c $HOME/.i3/i3blocks/i3blocks.conf
+    status_command i3blocks -c $HOME/.i3/i3blocks.conf
     position top
     tray_output DVI-I-1
     font pango:Inconsolata Medium 10
