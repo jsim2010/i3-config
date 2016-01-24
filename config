@@ -72,8 +72,17 @@ bindsym $alt+h focus left
 bindsym $alt+l focus right
 bindsym $alt+j focus down
 bindsym $alt+k focus up
-bindsym $alt+1 focus output $output1
-bindsym $alt+2 focus output $output2
+bindsym $alt+1 workspace number 1
+bindsym $alt+2 workspace number 2
+bindsym $alt+3 workspace number 3
+bindsym $alt+4 workspace number 4
+bindsym $alt+5 workspace number 5
+bindsym $alt+6 workspace number 6
+bindsym $alt+7 workspace number 7
+bindsym $alt+8 workspace number 8
+bindsym $alt+9 workspace number 9
+#bindsym $alt+1 focus output $output1
+#bindsym $alt+2 focus output $output2
 
 bindsym $alt+g exec i3-msg workspace $get_workspace
 
