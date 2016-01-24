@@ -50,8 +50,7 @@ client.urgent $special $special $meta $activation
 # Due to some keyboards not having the windows key (specifically my chromebook)
 # use the Alt key as my default modifier.
 set $alt Mod1
-set $terminal_cmd roxterm
-#set $terminal_cmd roxterm --execute nvim -c terminal
+set $terminal_cmd xterm -bg gray20 -fg WhiteSmoke -fa 'Inconsolata' -fs 10 -e nvim -c terminal
 set $get_workspace $(i3-msg -t get_workspaces | jsawk 'out(this.name)' | head --lines=-1 | dmenu)
 set $create_workspace_cmd i3-input -F 'workspace "%s"' -P 'Workspace name: '
 set $rename_workspace_cmd i3-input -F 'rename workspace to "%s"' -P 'New name: '
@@ -170,9 +169,9 @@ for_window [class="^Insync.py$"] floating enable
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-    status_command i3blocks -c $HOME/.i3/i3blocks.conf
+    status_command i3blocks
     position top
-    tray_output DVI-I-1
+    #tray_output DVI-I-1
     font pango:Inconsolata Medium 10
     colors {
         background $text
