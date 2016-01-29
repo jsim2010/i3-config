@@ -49,7 +49,7 @@ client.urgent $special $special $meta $activation
 # Due to some keyboards not having the windows key (specifically my chromebook)
 # use the Alt key as my default modifier.
 set $alt Mod1
-set $terminal_cmd xterm -bg gray20 -fg WhiteSmoke -fa 'Inconsolata' -fs 10 -e nvim -c terminal
+set $terminal_cmd nyaovim -c terminal
 set $get_workspace $(i3-msg -t get_workspaces | jsawk 'out(this.name)' | head --lines=-1 | dmenu)
 set $create_workspace_cmd i3-input -F 'workspace "%s"' -P 'Workspace name: '
 set $rename_workspace_cmd i3-input -F 'rename workspace to "%s"' -P 'New name: '
