@@ -116,7 +116,7 @@ bindsym $alt+p move scratchpad
 bindsym $alt+o scratchpad show
 
 # reload the configuration file
-bindsym $alt+Shift+c reload
+bindsym $alt+Shift+c exec ~/.config/i3/generate_config; reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $alt+Shift+r restart
 # exit i3 (logs you out of your X session)
