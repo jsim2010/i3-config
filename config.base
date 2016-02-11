@@ -166,13 +166,13 @@ for_window [instance="crx_nckgahadagoaajjgafhacjanaoiihapd"] move right, move co
 for_window [window_role="bubble"] floating enable
 for_window [class="^Insync.py$"] floating enable
 
-# Start i3bar for output1 (vertical) with no i3blocks
+# Start i3bar for main-output with i3blocks
 bar {
-    id bar-1
-    output $output1
+    id main-output-bar
+    $set_main_output
     position top
-    tray_output none
     font pango:Inconsolata Medium 11
+    status_command i3blocks
     colors {
         background $text
         statusline $literal
@@ -185,13 +185,13 @@ bar {
     }
 }
 
-# Start i3bar for output2 with i3blocks
+# Start i3bar for vertical output with no i3blocks
 bar {
-    id bar-2
-    output $output2
-    font pango:Inconsolata Medium 11
-    status_command i3blocks
+    id secondary-output-bar
+    $set_secondary_output
     position top
+    tray_output none
+    font pango:Inconsolata Medium 11
     colors {
         background $text
         statusline $literal
