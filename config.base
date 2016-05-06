@@ -51,7 +51,7 @@ floating_modifier $alt
 bindsym $alt+Return exec $terminal_cmd
 bindsym $alt+Shift+w kill
 bindsym $alt+c exec $create_workspace_cmd
-bindsym $alt+n exec $rename_workspace_cmd
+bindsym $alt+m exec $rename_workspace_cmd
 
 # start dmenu (a program launcher)
 #   -i matches menu items case insensitively
@@ -60,8 +60,10 @@ bindsym $alt+e exec dmenu_run -i
 # change focus
 bindsym $alt+h focus left
 bindsym $alt+l focus right
-bindsym $alt+j focus down
-bindsym $alt+k focus up
+bindsym $alt+j focus parent; focus down; focus child
+bindsym $alt+k focus parent; focus up; focus child
+bindsym $alt+n focus down
+bindsym $alt+Shift+n focus up
 bindsym $alt+1 workspace number 1
 bindsym $alt+2 workspace number 2
 bindsym $alt+3 workspace number 3
