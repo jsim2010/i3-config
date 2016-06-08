@@ -103,7 +103,7 @@ bindsym $alt+Shift+o move workspace to output right
 bindsym $alt+t layout stacked
 bindsym $alt+Shift+space floating toggle
 bindsym $alt+f fullscreen
-bindsym $alt+s layout splith
+bindsym $alt+s layout toggle split
 
 # scratchpad
 bindsym $alt+p move scratchpad
