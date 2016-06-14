@@ -44,6 +44,9 @@ set $terminal_cmd pynvim
 set $get_workspace $(i3-msg -t get_workspaces | jsawk 'out(this.name)' | head --lines=-1 | dmenu)
 set $create_workspace_cmd i3-input -F 'workspace "%s"' -P 'Workspace name: '
 set $rename_workspace_cmd i3-input -F 'rename workspace to "%s"' -P 'New name: '
+set $noid --no-startup-id
+
+bindsym --release $alt+BackSpace exec $noid xdotool key --clearmodifiers "Delete"
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $alt
@@ -139,7 +142,6 @@ bindsym $alt+r mode "resize"
 # global bindings that aren't window specific (this seems like the best
 # place to put them). These bindings are implemented with Ctrl+Alt modifier
 set $ctrl_alt Control+Mod1
-set $noid --no-startup-id
 
 # volume bindings
 #bindsym $ctrl_alt+plus exec $noid ~/pa-vol.sh plus
