@@ -3,10 +3,6 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 # vim:filetype=i3
 
-# Host dependent variables
-set $insync insync start
-set $dunst dunst &
-
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 # A small font is used in order to ensure stacked layout does not take up too
@@ -40,48 +36,37 @@ client.urgent $special $special $meta $activation
 # Due to some keyboards not having the windows key (specifically my chromebook)
 # use the Alt key as my default modifier.
 set $alt Mod1
-set $terminal_cmd pynvim
-set $get_workspace $(i3-msg -t get_workspaces | jsawk 'out(this.name)' | head --lines=-1 | dmenu)
 set $create_workspace_cmd i3-input -F 'workspace "%s"' -P 'Workspace name: '
 set $rename_workspace_cmd i3-input -F 'rename workspace to "%s"' -P 'New name: '
+set $scripts_dir ~/.config/i3/scripts
 set $noid --no-startup-id
+set $dunst dunst &
 
 bindsym --release $alt+BackSpace exec $noid xdotool key --clearmodifiers "Delete"
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $alt
 
-bindsym $alt+Return exec $terminal_cmd
+bindsym $alt+Return exec $scripts_dir/start_terminal.sh
 bindsym $alt+Shift+w kill
 bindsym $alt+c exec $create_workspace_cmd
 bindsym $alt+m exec $rename_workspace_cmd
-
-# start dmenu (a program launcher)
-#   -i matches menu items case insensitively
-bindsym $alt+e exec dmenu_run -i
+bindsym $alt+Shift+t exec $scripts_dir/toggle_touchpad.sh
 
 # change focus
 bindsym $alt+h focus left
 bindsym $alt+l focus right
 bindsym $alt+j focus parent; focus down; focus child
 bindsym $alt+k focus parent; focus up; focus child
-bindsym $alt+n focus down
-bindsym $alt+Shift+n focus up
-bindsym $alt+1 workspace number 1
-bindsym $alt+2 workspace number 2
-bindsym $alt+3 workspace number 3
-bindsym $alt+4 workspace number 4
-bindsym $alt+5 workspace number 5
-bindsym $alt+6 workspace number 6
-bindsym $alt+7 workspace number 7
-bindsym $alt+8 workspace number 8
-bindsym $alt+9 workspace number 9
-# TODO: Figure out how to do these commands
-#bindsym $alt+1 focus output $output1
-#bindsym $alt+2 focus output $output2
 
-bindsym $alt+g exec i3-msg workspace $get_workspace
+bindsym $alt+n exec $scripts_dir/focus_next_window.py down
+bindsym $alt+Shift+n exec $scripts_dir/focus_next_window.py up
 
+bindsym $alt+1 focus output $output1
+bindsym $alt+2 focus output $output2
+bindsym $alt+3 focus output $output3
+
+bindsym $alt+g exec $scripts_dir/set_workspace.sh
 bindsym $alt+space focus mode_toggle
 bindsym $alt+i focus parent
 bindsym $alt+u focus child
@@ -93,13 +78,12 @@ bindsym $alt+Shift+h move left
 bindsym $alt+Shift+l move right
 bindsym $alt+Shift+j move down
 bindsym $alt+Shift+k move up
+
 bindsym $alt+Shift+1 move output $output1; focus output $output1
 bindsym $alt+Shift+2 move output $output2; focus output $output2
+bindsym $alt+Shift+3 move output $output3; focus output $output3
 
-bindsym $alt+Shift+g exec i3-msg move container to workspace $get_workspace
-
-# move focused workspace
-bindsym $alt+Shift+o move workspace to output right
+bindsym $alt+Shift+g exec $scripts_dir/move_to_workspace.sh
 
 # Layouts
 # stacked works better as tabbed since we can then use focus up and down
@@ -113,9 +97,10 @@ bindsym $alt+p move scratchpad
 bindsym $alt+o scratchpad show
 
 # reload the configuration file
-bindsym $alt+Shift+c exec ~/.config/i3/generate_config.sh; reload
+bindsym $alt+Shift+c exec $scripts_dir/generate_config.sh; reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $alt+Shift+r restart
+# Remap capslock to control
+bindsym $alt+Shift+r restart; exec $noid setxkbmap -option ctrl:nocaps
 # exit i3 (logs you out of your X session)
 bindsym $alt+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
@@ -144,11 +129,11 @@ bindsym $alt+r mode "resize"
 set $ctrl_alt Control+Mod1
 
 # volume bindings
-#bindsym $ctrl_alt+plus exec $noid ~/pa-vol.sh plus
-#bindsym $ctrl_alt+minus exec $noid ~/pa-vol.sh minus
-#bindsym $ctrl_alt+0 exec $noid ~/pa-vol.sh mute
-bindsym $ctrl_alt+plus exec $noid ponymix --max-volume 100 increase 4 | pkill -RTMIN+1 i3blocks
-bindsym $ctrl_alt+minus exec $noid ponymix --max-volume 100 decrease 4 | pkill -RTMIN+1 i3blocks
+#bindsym $ctrl_alt+plus exec $noid ponymix --max-volume 100 increase 4 | pkill -RTMIN+1 i3blocks
+#bindsym $ctrl_alt+minus exec $noid ponymix --max-volume 100 decrease 4 | pkill -RTMIN+1 i3blocks
+#bindsym $ctrl_alt+0 exec $noid ponymix toggle | pkill -RTMIN+1 i3blocks
+bindsym $ctrl_alt+plus exec "$scripts_dir/set_volume.sh +4%"
+bindsym $ctrl_alt+minus exec "$scripts_dir/set_volume.sh -4%"
 bindsym $ctrl_alt+0 exec $noid ponymix toggle | pkill -RTMIN+1 i3blocks
 
 # pianobar bindings
@@ -189,7 +174,7 @@ bar {
     }
 }
 
-# Start i3bar for vertical output with no i3blocks
+# Start i3bar for output with no i3blocks
 bar {
     id secondary-output-bar
     $set_secondary_output
@@ -209,14 +194,32 @@ bar {
     }
 }
 
+# Start i3bar for output with no i3blocks
+bar {
+    id third-output-bar
+    $set_third_output
+    position top
+    tray_output none
+    font pango:Inconsolata Medium 11
+    colors {
+        background $text
+        statusline $literal
+        separator $foundation
+
+# border, background, foreground
+        focused_workspace $special $meta $text
+        active_workspace $special $text $meta
+        inactive_workspace $graphic $text $meta
+        urgent_workspace $special $special $meta
+    }
+}
+
 # ==================
 # AUTOSTART PROGRAMS
 # ==================
-# Remap capslock to control
-exec $noid setxkbmap -option ctrl:nocaps
-
 # Set startup volume
 exec $noid pactl set-sink-volume 0 '20%' &
 
-exec $noid $insync
-exec $noid $dunst
+exec 'setxkbmap -option ctrl:nocaps'
+exec $scripts_dir/set_display_config.sh
+exec $dunst
