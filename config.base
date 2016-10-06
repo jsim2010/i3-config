@@ -85,6 +85,15 @@ bindsym $alt+Shift+3 move output $output3; focus output $output3
 
 bindsym $alt+Shift+g exec $scripts_dir/move_to_workspace.sh
 
+# move workspace
+mode "move" {
+    bindsym 1 move workspace to output $output1; mode "default"
+    bindsym 2 move workspace to output $output2; mode "default"
+    bindsym 3 move workspace to output $output3; mode "default"
+}
+
+bindsym $alt+Shift+m mode "move"
+
 # Layouts
 # stacked works better as tabbed since we can then use focus up and down
 bindsym $alt+t layout stacked
