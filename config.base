@@ -113,6 +113,7 @@ bindsym $alt+Shift+r restart; exec $noid setxkbmap -option ctrl:nocaps
 # exit i3 (logs you out of your X session)
 bindsym $alt+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
+bindsym $alt+z exec $scripts_dir/set_display_config.sh
 mode "resize" {
     # Currently the plan is to not have windows vertically split so the up and
     # down resizes are only for floating containers.
