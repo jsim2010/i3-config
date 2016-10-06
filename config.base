@@ -136,25 +136,6 @@ bindsym $ctrl_alt+plus exec "$scripts_dir/set_volume.sh +4%"
 bindsym $ctrl_alt+minus exec "$scripts_dir/set_volume.sh -4%"
 bindsym $ctrl_alt+0 exec $noid ponymix toggle | pkill -RTMIN+1 i3blocks
 
-# pianobar bindings
-# 'p' = pause/resume playback
-bindsym $ctrl_alt+p exec $noid echo -n 'p' > ~/.config/pianobar/ctl | pkill -RTMIN+2 i3blocks
-# 'n' = skip current song
-bindsym $ctrl_alt+bracketright exec $noid echo -n 'n' > ~/.config/pianobar/ctl
-
-# lock screen
-bindsym $ctrl_alt+backslash exec $noid i3lock -c 000000
-
-# keepass auto-type
-bindsym $ctrl_alt+k exec $noid keepass2 --auto-type
-
-# Window specific properties
-for_window [class="Gcalctool" instance="gcalctool"] floating enable
-# hangouts (make sure window goes to 'hangouts' window and person windows stack to the right of the messages window)
-for_window [instance="crx_nckgahadagoaajjgafhacjanaoiihapd"] move right, move container to workspace hangouts
-for_window [window_role="bubble"] floating enable
-for_window [class="^Insync.py$"] floating enable
-
 # Start i3bar for main-output with i3blocks
 bar {
     id main-output-bar
