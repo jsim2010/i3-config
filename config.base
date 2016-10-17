@@ -90,6 +90,8 @@ mode "move" {
     bindsym 1 move workspace to output $output1; mode "default"
     bindsym 2 move workspace to output $output2; mode "default"
     bindsym 3 move workspace to output $output3; mode "default"
+
+    bindsym Escape mode "default"
 }
 
 bindsym $alt+Shift+m mode "move"
