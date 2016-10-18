@@ -56,11 +56,11 @@ bindsym $alt+Shift+t exec $scripts_dir/toggle_touchpad.sh
 # change focus
 bindsym $alt+h focus left
 bindsym $alt+l focus right
-bindsym $alt+j focus parent; focus down; focus child
-bindsym $alt+k focus parent; focus up; focus child
+bindsym $alt+j exec $scripts_dir/focus_window.py down
+bindsym $alt+k exec $scripts_dir/focus_window.py up
 
-bindsym $alt+n exec $scripts_dir/focus_next_window.py down
-bindsym $alt+Shift+n exec $scripts_dir/focus_next_window.py up
+bindsym $alt+n exec $scripts_dir/focus_window.py next
+bindsym $alt+Shift+n exec $scripts_dir/focus_window.py prev
 
 bindsym $alt+1 focus output $output1
 bindsym $alt+2 focus output $output2
