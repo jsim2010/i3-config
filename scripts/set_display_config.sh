@@ -1,7 +1,3 @@
-#!/bin/sh
+#!/bin/bash
 
-xrandr --output eDP1 --primary --mode 1920x1080
-xrandr --output DP1-2 --mode 1920x1080
-xrandr --output DP1-1 --mode 1920x1080 --rotate right
-xrandr --output DP1-2 --pos 1080x286
-xrandr --output eDP1 --pos 1080x1366
+xrandr --output DP1-2 --auto --rotate right --pos 0x0 --output DP1-1 --auto --pos 1080x0 --output eDP1 --pos 1080x1080

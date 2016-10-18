@@ -56,11 +56,11 @@ bindsym $alt+Shift+t exec $scripts_dir/toggle_touchpad.sh
 # change focus
 bindsym $alt+h focus left
 bindsym $alt+l focus right
-bindsym $alt+j focus parent; focus down; focus child
-bindsym $alt+k focus parent; focus up; focus child
+bindsym $alt+j exec $scripts_dir/focus_window.py down
+bindsym $alt+k exec $scripts_dir/focus_window.py up
 
-bindsym $alt+n exec $scripts_dir/focus_next_window.py down
-bindsym $alt+Shift+n exec $scripts_dir/focus_next_window.py up
+bindsym $alt+n exec $scripts_dir/focus_window.py next
+bindsym $alt+Shift+n exec $scripts_dir/focus_window.py prev
 
 bindsym $alt+1 focus output $output1
 bindsym $alt+2 focus output $output2
@@ -85,6 +85,17 @@ bindsym $alt+Shift+3 move output $output3; focus output $output3
 
 bindsym $alt+Shift+g exec $scripts_dir/move_to_workspace.sh
 
+# move workspace
+mode "move" {
+    bindsym 1 move workspace to output $output1; mode "default"
+    bindsym 2 move workspace to output $output2; mode "default"
+    bindsym 3 move workspace to output $output3; mode "default"
+
+    bindsym Escape mode "default"
+}
+
+bindsym $alt+Shift+m mode "move"
+
 # Layouts
 # stacked works better as tabbed since we can then use focus up and down
 bindsym $alt+t layout stacked
@@ -104,6 +115,7 @@ bindsym $alt+Shift+r restart; exec $noid setxkbmap -option ctrl:nocaps
 # exit i3 (logs you out of your X session)
 bindsym $alt+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
+bindsym $alt+z exec $scripts_dir/set_display_config.sh
 mode "resize" {
     # Currently the plan is to not have windows vertically split so the up and
     # down resizes are only for floating containers.
