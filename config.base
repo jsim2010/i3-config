@@ -108,15 +108,8 @@ bindsym $alt+s layout toggle split
 bindsym $alt+p move scratchpad
 bindsym $alt+o scratchpad show
 
-# reload the configuration file
-bindsym $alt+Shift+c exec $scripts_dir/generate_config.sh; reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-# Remap capslock to control
-bindsym $alt+Shift+r restart; exec $noid setxkbmap -option ctrl:nocaps
-# exit i3 (logs you out of your X session)
-bindsym $alt+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-
 bindsym $alt+z exec $scripts_dir/set_display_config.sh
+
 mode "resize" {
     # Currently the plan is to not have windows vertically split so the up and
     # down resizes are only for floating containers.
@@ -137,9 +130,26 @@ mode "resize" {
 
 bindsym $alt+r mode "resize"
 
-set $session "(E)xit"
+set $exit "Are you sure you want to exit? N/y"
+
+mode $exit {
+    # exit i3 (logs you out of your X session)
+    bindsym y exec "i3-msg exit"
+
+    bindsym n mode "default"
+    bindsym Escape mode $session
+    bindsym Return mode $session
+}
+
+set $session "(E)xit (C)lean (R)estart"
+
 mode $session {
-    bindsym e exec "i3-msg exit"
+    # Go to exit mode to make sure that the user wants to exit.
+    bindsym e mode $exit
+    # Re-generate the config file and relead it before restarting.
+    bindsym c exec $scripts_dir/generate_config.sh; reload; restart
+    # Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+    bindsym r restart
     
     bindsym Escape mode "default"
     bindsym Return mode "default"
