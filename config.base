@@ -72,6 +72,7 @@ bindsym $alt+i focus parent
 bindsym $alt+u focus child
 
 focus_follows_mouse no
+mouse_warping none
 
 # move focused window
 bindsym $alt+Shift+h move left
