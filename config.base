@@ -137,6 +137,16 @@ mode "resize" {
 
 bindsym $alt+r mode "resize"
 
+set $session "(E)xit"
+mode $session {
+    bindsym e exec "i3-msg exit"
+    
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+}
+
+bindsym $alt+Escape mode $session
+
 # global bindings that aren't window specific (this seems like the best
 # place to put them). These bindings are implemented with Ctrl+Alt modifier
 set $ctrl_alt Control+Mod1
