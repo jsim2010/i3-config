@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 import i3ipc
+import os
+from neovim import attach
+from subprocess import check_output
 from sys import exit
 from sys import argv
-from subprocess import check_output
 
 i3 = i3ipc.Connection()
 tree = i3.get_tree()
@@ -46,7 +48,7 @@ if (len(argv) < 2):
     exit(1)
 
 sibling_commands = ["next", "prev"]
-visible_commands = ["down", "up"]
+visible_commands = ["down", "up", "left", "right"]
 
 if argv[1] in sibling_commands:
     focused_window = tree.find_focused()
@@ -64,10 +66,37 @@ if argv[1] in sibling_commands:
     if new_index != -1:
         i3.command('[con_id=%s] focus' % siblings[new_index].id)
 elif argv[1] in visible_commands:
+    original_window = tree.find_focused()
+
+    if original_window.window_class == "NyaoVim":
+        register_file = open(os.environ.get("HOME") + "/.config/i3/data/" + str(original_window.id), "r")
+        addr = register_file.read()
+        nvim = attach("socket", path=addr)
+
+        nvim_cmd = "wincmd "
+
+        if argv[1] == "left":
+            nvim_cmd += "h"
+        elif argv[1] == "down":
+            nvim_cmd += "j"
+        elif argv[1] == "up":
+            nvim_cmd += "k"
+        elif argv[1] == "right":
+            nvim_cmd += "l"
+
+        original_nvim_winnr = nvim.eval('winnr()')
+        nvim.command(nvim_cmd)
+        
+        if "term://" in nvim.eval('bufname("%")'):
+            nvim.input("i")
+
+        # If we change our winnr, we focus to a new nvim window; else we should see if i3 can focus to a new window.
+        if original_nvim_winnr != nvim.eval('winnr()'):
+            exit(0)
+
     visible_workspace_names = get_visible_workspace_names()
     visible_window_ids = get_visible_window_ids()
     command = "focus %s" % argv[1]
-    original_window = tree.find_focused()
 
     i3.command(command)
     # Must refresh i3ipc connection after command to find new focused_window.

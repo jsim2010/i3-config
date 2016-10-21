@@ -3,15 +3,22 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 # vim:filetype=i3
 
-# Font for window titles. Will also be used by the bar unless a different font
-# is used in the bar {} block below.
-# A small font is used in order to ensure stacked layout does not take up too
-# much room.
-font pango:Iconsolata Medium 8
+###########
+# Display #
+###########
 
-workspace_layout stacking
+# Fonts
+#######
+set $set_font font pango:Inconsolata Medium
+# Window title font is small to ensure stacked layout does not take up too much room.
+set $window_title_size 8
+set $bar_size 11
+
+$set_font $window_title_size
 
 # Colors
+########
+
 # Background colors
 set $error #5f0000
 set $special #af5f00
@@ -25,13 +32,53 @@ set $literal #ff5faf
 
 client.background $graphic
 
-# border, background, foreground, indicator
+# Arguments are border, background, foreground, indicator
 client.focused $special $meta $text $activation
 client.focused_inactive $special $text $meta $activation
 client.unfocused $graphic $graphic $meta $activation
 client.urgent $special $special $meta $activation
 
-# Keybindings
+# Bars
+######
+
+# Start i3bar for main-output with i3blocks
+bar {
+    output $output1
+    position top
+    $set_font $bar_size
+    tray_output $output1
+    status_command i3blocks
+    colors {
+        background $text
+        statusline $literal
+        separator $foundation
+
+        focused_workspace $special $meta $text
+        active_workspace $special $text $meta
+        inactive_workspace $graphic $text $meta
+        urgent_workspace $special $special $meta
+    }
+}
+
+# Start i3bar for output with no i3blocks
+bar {
+    output $output2
+    output $output3
+    position top
+    tray_output none
+    $set_font $bar_size
+    colors {
+        background $text
+        statusline $literal
+        separator $foundation
+
+# border, background, foreground
+        focused_workspace $special $meta $text
+        active_workspace $special $text $meta
+        inactive_workspace $graphic $text $meta
+        urgent_workspace $special $special $meta
+    }
+}
 
 # Due to some keyboards not having the windows key (specifically my chromebook)
 # use the Alt key as my default modifier.
@@ -42,6 +89,7 @@ set $scripts_dir ~/.config/i3/scripts
 set $noid --no-startup-id
 set $dunst dunst &
 
+workspace_layout stacking
 bindsym --release $alt+BackSpace exec $noid xdotool key --clearmodifiers "Delete"
 
 # Use Mouse+$mod to drag floating windows to their wanted position
@@ -54,8 +102,8 @@ bindsym $alt+m exec $rename_workspace_cmd
 bindsym $alt+Shift+t exec $scripts_dir/toggle_touchpad.sh
 
 # change focus
-bindsym $alt+h focus left
-bindsym $alt+l focus right
+bindsym $alt+h exec $scripts_dir/focus_window.py left
+bindsym $alt+l exec $scripts_dir/focus_window.py right
 bindsym $alt+j exec $scripts_dir/focus_window.py down
 bindsym $alt+k exec $scripts_dir/focus_window.py up
 
@@ -169,64 +217,6 @@ bindsym $ctrl_alt+plus exec "$scripts_dir/set_volume.sh +4%"
 bindsym $ctrl_alt+minus exec "$scripts_dir/set_volume.sh -4%"
 bindsym $ctrl_alt+0 exec $noid ponymix toggle | pkill -RTMIN+1 i3blocks
 
-# Start i3bar for main-output with i3blocks
-bar {
-    id main-output-bar
-    $set_main_output
-    position top
-    font pango:Inconsolata Medium 11
-    status_command i3blocks
-    colors {
-        background $text
-        statusline $literal
-        separator $foundation
-
-        focused_workspace $special $meta $text
-        active_workspace $special $text $meta
-        inactive_workspace $graphic $text $meta
-        urgent_workspace $special $special $meta
-    }
-}
-
-# Start i3bar for output with no i3blocks
-bar {
-    id secondary-output-bar
-    $set_secondary_output
-    position top
-    tray_output none
-    font pango:Inconsolata Medium 11
-    colors {
-        background $text
-        statusline $literal
-        separator $foundation
-
-# border, background, foreground
-        focused_workspace $special $meta $text
-        active_workspace $special $text $meta
-        inactive_workspace $graphic $text $meta
-        urgent_workspace $special $special $meta
-    }
-}
-
-# Start i3bar for output with no i3blocks
-bar {
-    id third-output-bar
-    $set_third_output
-    position top
-    tray_output none
-    font pango:Inconsolata Medium 11
-    colors {
-        background $text
-        statusline $literal
-        separator $foundation
-
-# border, background, foreground
-        focused_workspace $special $meta $text
-        active_workspace $special $text $meta
-        inactive_workspace $graphic $text $meta
-        urgent_workspace $special $special $meta
-    }
-}
 
 # ==================
 # AUTOSTART PROGRAMS
