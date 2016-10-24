@@ -86,9 +86,6 @@ elif argv[1] in visible_commands:
 
         original_nvim_winnr = nvim.eval('winnr()')
         nvim.command(nvim_cmd)
-        
-        if "term://" in nvim.eval('bufname("%")'):
-            nvim.input("i")
 
         # If we change our winnr, we focus to a new nvim window; else we should see if i3 can focus to a new window.
         if original_nvim_winnr != nvim.eval('winnr()'):
@@ -106,10 +103,36 @@ elif argv[1] in visible_commands:
         i3.command(command)
         focused_window = i3ipc.Connection().get_tree().find_focused()
 
-    # We might have hidden original_window, so make it visible again before
-    # focusing directly to focused_window
-    i3.command('[con_id=%s] focus' % original_window.id)
-    i3.command('[con_id=%s] focus' % focused_window.id)
+    if focused_window.id != original_window.id:
+        # We might have hidden original_window, so make it visible again before
+        # focusing directly to focused_window
+        i3.command('[con_id=%s] focus' % original_window.id)
+        i3.command('[con_id=%s] focus' % focused_window.id)
+
+        if focused_window.window_class == "NyaoVim":
+            # If we changed i3 windows to a nvim window, make sure we move to the correct one.
+            register_file = open(os.environ.get("HOME") + "/.config/i3/data/" + str(focused_window.id), "r")
+            addr = register_file.read()
+            nvim = attach("socket", path=addr)
+
+            nvim_cmd = "wincmd "
+
+            # We want to make sure we are in the window farthest towards the opposite direction
+            if argv[1] == "left":
+                nvim_cmd += "l"
+            elif argv[1] == "down":
+                nvim_cmd += "k"
+            elif argv[1] == "up":
+                nvim_cmd += "j"
+            elif argv[1] == "right":
+                nvim_cmd += "h"
+
+            while True:
+                original_nvim_winnr = nvim.eval('winnr()')
+                nvim.command(nvim_cmd)
+
+                if original_nvim_winnr == nvim.eval('winnr()'):
+                    break
 else:
     print "ERROR: Usage is incorrect."
     print "  %s<dir>" % argv[0]
