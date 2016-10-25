@@ -69,7 +69,9 @@ elif argv[1] in visible_commands:
     original_window = tree.find_focused()
 
     if original_window.window_class == "NyaoVim":
-        register_file = open(os.environ.get("HOME") + "/.config/i3/data/" + str(original_window.id), "r")
+        register_filename = os.environ.get("HOME") \
+            + "/.config/i3/data/" + str(original_window.id)
+        register_file = open(register_filename, "r")
         addr = register_file.read()
         nvim = attach("socket", path=addr)
 
@@ -87,7 +89,8 @@ elif argv[1] in visible_commands:
         original_nvim_winnr = nvim.eval('winnr()')
         nvim.command(nvim_cmd)
 
-        # If we change our winnr, we focus to a new nvim window; else we should see if i3 can focus to a new window.
+        # If we change our winnr, we focus to a new nvim window;
+        # else we should see if i3 can focus to a new window.
         if original_nvim_winnr != nvim.eval('winnr()'):
             exit(0)
 
@@ -110,14 +113,18 @@ elif argv[1] in visible_commands:
         i3.command('[con_id=%s] focus' % focused_window.id)
 
         if focused_window.window_class == "NyaoVim":
-            # If we changed i3 windows to a nvim window, make sure we move to the correct one.
-            register_file = open(os.environ.get("HOME") + "/.config/i3/data/" + str(focused_window.id), "r")
+            # If we changed i3 windows to a nvim window,
+            # make sure we move to the correct one.
+            register_filename = os.environ.get("HOME") \
+                + "/.config/i3/data/" + str(focused_window.id)
+            register_file = open(register_filename, "r")
             addr = register_file.read()
             nvim = attach("socket", path=addr)
 
             nvim_cmd = "wincmd "
 
-            # We want to make sure we are in the window farthest towards the opposite direction
+            # We want to make sure we are in the window farthest towards
+            # the opposite direction
             if argv[1] == "left":
                 nvim_cmd += "l"
             elif argv[1] == "down":
