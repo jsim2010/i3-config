@@ -2,6 +2,7 @@
 
 import i3ipc
 import os
+import re
 from neovim import attach
 from subprocess import check_output
 from sys import exit
@@ -41,6 +42,15 @@ def get_visible_window_ids():
                     visible_window_ids.append(window.id)
 
     return visible_window_ids
+
+
+def buffer_is_term(nvim):
+    return re.search(r"^term://", nvim.eval('bufname("%")'))
+
+
+def prepare_new_nvim_buffer(nvim):
+    if buffer_is_term(nvim) and nvim.eval('mode()') == 'n':
+        nvim.input('i')
 
 
 if (len(argv) < 2):
@@ -92,7 +102,8 @@ elif argv[1] in visible_commands:
         # If we change our winnr, we focus to a new nvim window;
         # else we should see if i3 can focus to a new window.
         if original_nvim_winnr != nvim.eval('winnr()'):
-            exit(0)
+            prepare_new_nvim_buffer(nvim)
+            exit(1)
 
     visible_workspace_names = get_visible_workspace_names()
     visible_window_ids = get_visible_window_ids()
@@ -106,21 +117,24 @@ elif argv[1] in visible_commands:
         i3.command(command)
         focused_window = i3ipc.Connection().get_tree().find_focused()
 
+    nvim = None
+
+    if focused_window.window_class == "NyaoVim":
+        register_filename = os.environ.get("HOME") \
+            + "/.config/i3/data/" + str(focused_window.id)
+        register_file = open(register_filename, "r")
+        addr = register_file.read()
+        nvim = attach("socket", path=addr)
+
     if focused_window.id != original_window.id:
         # We might have hidden original_window, so make it visible again before
         # focusing directly to focused_window
         i3.command('[con_id=%s] focus' % original_window.id)
         i3.command('[con_id=%s] focus' % focused_window.id)
 
-        if focused_window.window_class == "NyaoVim":
-            # If we changed i3 windows to a nvim window,
-            # make sure we move to the correct one.
-            register_filename = os.environ.get("HOME") \
-                + "/.config/i3/data/" + str(focused_window.id)
-            register_file = open(register_filename, "r")
-            addr = register_file.read()
-            nvim = attach("socket", path=addr)
-
+        # If we changed i3 windows to a nvim window,
+        # make sure we move to the correct one.
+        if nvim is not None:
             nvim_cmd = "wincmd "
 
             # We want to make sure we are in the window farthest towards
@@ -140,6 +154,9 @@ elif argv[1] in visible_commands:
 
                 if original_nvim_winnr == nvim.eval('winnr()'):
                     break
+
+    if focused_window.window_class == "NyaoVim":
+        prepare_new_nvim_buffer(nvim)
 else:
     print "ERROR: Usage is incorrect."
     print "  %s<dir>" % argv[0]
