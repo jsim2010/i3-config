@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nyaovim
+nyaovim term://bash
