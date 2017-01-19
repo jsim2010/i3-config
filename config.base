@@ -20,21 +20,23 @@ $set_font $window_title_size
 ########
 
 # Background colors
-set $error #5f0000
-set $special #af5f00
+set $error #870000
+set $special #875f00
 set $text #262626
+set $help #005f87
 set $graphic #000000
+set $select #6c6c6c
 # Foreground colors
-set $meta #005fff
+set $meta #00afff
 set $activation #00ff00
-set $foundation #d78700
+set $foundation #af8700
 set $literal #ff5faf
 
 client.background $graphic
 
 # Arguments are border, background, foreground, indicator
-client.focused $special $meta $text $activation
-client.focused_inactive $special $text $meta $activation
+client.focused $select $select $meta $activation
+client.focused_inactive $special $graphic $meta $activation
 client.unfocused $graphic $graphic $meta $activation
 client.urgent $special $special $meta $activation
 
@@ -49,13 +51,14 @@ bar {
     tray_output $output1
     status_command i3blocks
     colors {
-        background $text
+        background $help
         statusline $literal
         separator $foundation
 
-        focused_workspace $special $meta $text
-        active_workspace $special $text $meta
-        inactive_workspace $graphic $text $meta
+        # border, background, foreground
+        focused_workspace $select $select $meta
+        active_workspace $special $graphic $meta
+        inactive_workspace $graphic $graphic $meta
         urgent_workspace $special $special $meta
     }
 }
@@ -68,14 +71,14 @@ bar {
     tray_output none
     $set_font $bar_size
     colors {
-        background $text
+        background $help
         statusline $literal
         separator $foundation
 
-# border, background, foreground
-        focused_workspace $special $meta $text
-        active_workspace $special $text $meta
-        inactive_workspace $graphic $text $meta
+        # border, background, foreground
+        focused_workspace $select $select $meta
+        active_workspace $special $graphic $meta
+        inactive_workspace $graphic $graphic $meta
         urgent_workspace $special $special $meta
     }
 }
