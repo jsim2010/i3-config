@@ -91,9 +91,11 @@ set $rename_workspace_cmd i3-input -F 'rename workspace to "%s"' -P 'New name: '
 set $scripts_dir ~/.config/i3/scripts
 set $noid --no-startup-id
 set $dunst dunst &
+set $remap_key exec --no-startup-id xdotool key --clearmodifiers
 
 workspace_layout stacking
-bindsym --release $alt+BackSpace exec $noid xdotool key --clearmodifiers "Delete"
+# TODO: This was replaced by alt_l + backspace. We should make sure that works before removing it here
+#bindsym --release $alt+BackSpace $remap_key "Delete"
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $alt
@@ -219,6 +221,35 @@ set $ctrl_alt Control+Mod1
 bindsym $ctrl_alt+plus exec "$scripts_dir/set_volume.sh +4%"
 bindsym $ctrl_alt+minus exec "$scripts_dir/set_volume.sh -4%"
 bindsym $ctrl_alt+0 exec $noid ponymix toggle | pkill -RTMIN+1 i3blocks
+
+
+# bind keys that cause leaving home keys to left alt
+bindsym Alt_L mode "extra"
+
+mode "extra" {
+    # directional keys
+    bindsym --release h $remap_key "Left"
+    bindsym --release j $remap_key "Down"
+    bindsym --release k $remap_key "Up"
+    bindsym --release l $remap_key "Right"
+
+    # word movements
+    bindsym --release e $remap_key "ctrl+Right"
+    bindsym --release b $remap_key "ctrl+Left"
+
+    # large movements
+    bindsym --release u $remap_key "Prior"
+    bindsym --release d $remap_key "Next"
+    bindsym --release i $remap_key "Home"
+    bindsym --release a $remap_key "End"
+
+    # modification
+    bindsym --release x $remap_key "Delete"
+    bindsym --release BackSpace $remap_key "ctrl+Delete"
+
+    # leave when left alt is released
+    bindsym --release Alt_L mode "default"
+}
 
 
 # ==================
