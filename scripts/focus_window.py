@@ -59,6 +59,7 @@ if (len(argv) < 2):
 
 sibling_commands = ["next", "prev"]
 visible_commands = ["down", "up", "left", "right"]
+nvim_window_classes = ["NyaoVim", "Hyper", "xterm"]
 
 if argv[1] in sibling_commands:
     focused_window = tree.find_focused()
@@ -78,7 +79,7 @@ if argv[1] in sibling_commands:
 elif argv[1] in visible_commands:
     original_window = tree.find_focused()
 
-    if original_window.window_class == "NyaoVim":
+    if original_window.window_class in nvim_window_classes:
         register_filename = os.environ.get("HOME") \
             + "/.config/i3/data/" + str(original_window.id)
         register_file = open(register_filename, "r")
@@ -119,7 +120,7 @@ elif argv[1] in visible_commands:
 
     nvim = None
 
-    if focused_window.window_class == "NyaoVim":
+    if focused_window.window_class in nvim_window_classes:
         register_filename = os.environ.get("HOME") \
             + "/.config/i3/data/" + str(focused_window.id)
         register_file = open(register_filename, "r")
@@ -155,7 +156,7 @@ elif argv[1] in visible_commands:
                 if original_nvim_winnr == nvim.eval('winnr()'):
                     break
 
-    if focused_window.window_class == "NyaoVim":
+    if focused_window.window_class in nvim_window_classes:
         prepare_new_nvim_buffer(nvim)
 else:
     print "ERROR: Usage is incorrect."
